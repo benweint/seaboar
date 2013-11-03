@@ -132,7 +132,7 @@ module Seaboar
     def parse_byte_string(extra)
       if extra == LENGTH_INDEFINITE
         str = ''.force_encoding('ASCII-8BIT')
-        parse_indefinite { |chunk| str << chunk }
+        parse_indefinite(str)
       else
         str = parse_byte_string_chunk(extra)
       end
@@ -153,8 +153,7 @@ module Seaboar
 
     def parse_utf8_string(extra)
       if extra == LENGTH_INDEFINITE
-        str = ''
-        parse_indefinite { |chunk| str << chunk }
+        str = parse_indefinite('')
       else
         length = parse_uint(extra)
         str = consume_utf8_string(length)
@@ -226,7 +225,7 @@ module Seaboar
     def parse_array(extra)
       array = []
       if extra == LENGTH_INDEFINITE
-        parse_indefinite { |chunk| array << chunk }
+        parse_indefinite(array)
       else
         length = parse_uint(extra)
         length.times { array << parse_one }
@@ -237,9 +236,7 @@ module Seaboar
     def parse_map(extra)
       map = {}
       if extra == LENGTH_INDEFINITE
-        keys_and_values = []
-        parse_indefinite { |chunk| keys_and_values << chunk }
-        map = Hash[*keys_and_values]
+        map = Hash[*parse_indefinite([])]
       else
         length = parse_uint(extra)
         length.times do
@@ -262,14 +259,15 @@ module Seaboar
       end
     end
 
-    def parse_indefinite
+    def parse_indefinite(initial)
       target_depth = @indefinite.size
       @indefinite.push(true)
       loop do
         chunk = parse_one
         break if @indefinite.size == target_depth
-        yield chunk
+        initial << chunk
       end
+      initial
     end
 
     def parse_one
