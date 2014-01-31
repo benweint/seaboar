@@ -5,10 +5,10 @@ class EncodingTests < MiniTest::Unit::TestCase
     s.unpack("C*").map { |b| "%02x" % b }.join(' ')
   end
 
-  def assert_encode(object, expected)
+  def assert_encode(object, expected, options={})
     expected_bytes = expected.scan(/.{2}/).map(&:hex)
     expected_bin   = expected_bytes.pack("C*")
-    actual = Seaboar.encode(object)
+    actual = Seaboar.encode(object, options)
     msg = "Failed to encode #{object.inspect}\n"
     msg << "Expected bytes: #{format_bytestring(expected_bin)}\n"
     msg << "Actual bytes:   #{format_bytestring(actual)}\n\n"

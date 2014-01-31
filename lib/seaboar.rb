@@ -55,8 +55,8 @@ module Seaboar
     Seaboar::Parser.new(input).parse
   end
 
-  def self.encode(input)
-    Seaboar::Encoder.new(input).encode
+  def self.encode(input, options={})
+    Seaboar::Encoder.new(input, options).encode
   end
 end
 
