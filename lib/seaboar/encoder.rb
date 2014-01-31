@@ -30,6 +30,10 @@ module Seaboar
       @output << byte.chr
     end
 
+    def put_bytes(byte_string)
+      @output << byte_string
+    end
+
     def put_type(type, extra)
       put(((type << 5) & 0b11100000) | (extra & 0b00011111))
     end
@@ -44,24 +48,13 @@ module Seaboar
         put(n)
       when n <= 0xffff
         put(type_bits | SUBTYPE_UINT16)
-        put(n & 0xff)
-        put((n >> 8) & 0xff)
+        put_bytes([n].pack("S>"))
       when n <= 0xffffffff
         put(type_bits | SUBTYPE_UINT32)
-        put(n & 0xff)
-        put((n >> 8) & 0xff)
-        put((n >> 16) & 0xff)
-        put((n >> 24) & 0xff)
+        put_bytes([n].pack("L>"))
       when n <= 0xffffffffffffffff
         put(type_bits | SUBTYPE_UINT64)
-        put(n & 0xff)
-        put((n >> 8) & 0xff)
-        put((n >> 16) & 0xff)
-        put((n >> 24) & 0xff)
-        put((n >> 32) & 0xff)
-        put((n >> 40) & 0xff)
-        put((n >> 48) & 0xff)
-        put((n >> 56) & 0xff)
+        put_bytes([n].pack("Q>"))
       end
     end
 
