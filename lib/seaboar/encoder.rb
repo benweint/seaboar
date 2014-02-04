@@ -1,11 +1,13 @@
 module Seaboar
   class Encoder
     FLOAT_WIDTHS = {
-      :half => FLOAT_HALF
+      :half   => FLOAT_HALF,
+      :single => FLOAT_SINGLE,
+      :double => FLOAT_DOUBLE
     }
 
     DEFAULTS = {
-      :float_width => :half
+      :float_width => :double
     }
 
     def initialize(input, options={})
@@ -13,16 +15,22 @@ module Seaboar
       @output = ""
       @output.force_encoding('ASCII-8BIT')
       @options = DEFAULTS.merge(options)
+      @float_width = FLOAT_WIDTHS[@options[:float_width]]
     end
 
-    def encode_fixnum(n)
-      type = n >= 0 ? MAJ_TYPE_UINT : MAJ_TYPE_NEG_INT
-      value = type == MAJ_TYPE_UINT ? n : -1 - n
-
-      if value <= UINT_MAX_INLINE
-        put_type(type, value)
-      else
+    def encode_integer(n)
+      value = n >= 0 ? n : -1 - n
+      if value <= UINT_MAX
+        type = n >= 0 ? MAJ_TYPE_UINT : MAJ_TYPE_NEG_INT
         put_numeric_bytes(type, value)
+      else
+        put_type(MAJ_TYPE_TAG, n >= 0 ? TAG_BIGNUM : TAG_NEG_BIGNUM)
+        bytestr = ''.force_encoding('ASCII-8BIT')
+        while value > 0
+          bytestr << (value & 0xff)
+          value = value >> 8
+        end
+        encode_string(bytestr.reverse, MAJ_TYPE_BYTE_STR)
       end
     end
 
@@ -58,26 +66,38 @@ module Seaboar
       end
     end
 
-    def encode_float(n, width)
+    def encode_float(n)
       case n
       when Float::INFINITY
-        put_type(MAJ_TYPE_FLOAT_OTHER, FLOAT_WIDTHS[width])
+        put_type(MAJ_TYPE_FLOAT_OTHER, @float_width)
       else
+        put_type(MAJ_TYPE_FLOAT_OTHER, @float_width)
+        case @float_width
+        when FLOAT_HALF
+        when FLOAT_SINGLE
+          put_bytes([n].pack("g"))
+        when FLOAT_DOUBLE
+          put_bytes([n].pack("G"))
+        end
       end
+    end
+
+    def encode_string(s, type)
+      nbytes = s.bytesize
+      put_numeric_bytes(type, nbytes)
+      s.each_byte { |b| put(b) }
     end
 
     def encode
       current = @input
       case current
-      when Fixnum
-        encode_fixnum(current)
+      when Integer
+        encode_integer(current)
       when Float
-        encode_float(current, @options[:float_width])
+        encode_float(current)
       when String
         if current.encoding == 'ASCII-8BIT'
-          
         else
-
         end
       when Array
       when Hash

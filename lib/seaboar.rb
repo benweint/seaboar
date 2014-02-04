@@ -13,6 +13,7 @@ module Seaboar
 
   # Subtypes for MAJ_TYPE_UINT / MAJ_TYPE_NEG_INT
   UINT_MAX_INLINE = 23
+  UINT_MAX        = 0xffffffffffffffff
   SUBTYPE_UINT8   = 24
   SUBTYPE_UINT16  = 25
   SUBTYPE_UINT32  = 26
