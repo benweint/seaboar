@@ -66,14 +66,27 @@ module Seaboar
       end
     end
 
+    def put_float_special(n)
+      put_type(MAJ_TYPE_FLOAT_OTHER, FLOAT_HALF)
+      case n
+      when 0.0
+        put(0x00); put(0x00)
+      when -0.0
+        put(0x80); put(0x00)
+      when 1.0
+        put(0x3c); put(0x00)
+      when Float::INFINITY
+        
+      end
+    end
+
     def encode_float(n)
       case n
-      when Float::INFINITY
-        put_type(MAJ_TYPE_FLOAT_OTHER, @float_width)
+      when 0.0, -0.0, 1.0, Float::INFINITY
+        put_float_special(n)
       else
         put_type(MAJ_TYPE_FLOAT_OTHER, @float_width)
         case @float_width
-        when FLOAT_HALF
         when FLOAT_SINGLE
           put_bytes([n].pack("g"))
         when FLOAT_DOUBLE
