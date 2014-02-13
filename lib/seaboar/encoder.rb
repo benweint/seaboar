@@ -68,25 +68,47 @@ module Seaboar
 
     def put_float_special(n)
       put_type(MAJ_TYPE_FLOAT_OTHER, FLOAT_HALF)
-      case n
-      when 0.0
-        put(0x00); put(0x00)
-      when -0.0
-        put(0x80); put(0x00)
-      when 1.0
-        put(0x3c); put(0x00)
-      when Float::INFINITY
-        
+      if n.nan?
+        put(0x7e); put(0x00)
+      else
+        case n
+        when 0.0
+          put(0x00); put(0x00)
+        when -0.0
+          put(0x80); put(0x00)
+        when 1.0
+          put(0x3c); put(0x00)
+        when Float::INFINITY
+          put(0x7c); put(0x00)
+        when -Float::INFINITY
+          put(0xfc); put(0x00)
+        end
+      end
+    end
+
+    def float_auto_width(n)
+      if [n].pack("g").unpack("g").first == n
+        FLOAT_SINGLE
+      else
+        FLOAT_DOUBLE
       end
     end
 
     def encode_float(n)
+      if n.nan?
+        put_float_special(n)
+        return
+      end
       case n
-      when 0.0, -0.0, 1.0, Float::INFINITY
+      when 0.0, 1.0, Float::INFINITY, -Float::INFINITY
+        put_float_special(n)
+      when n.nan?
+        puts "got a nan!"
         put_float_special(n)
       else
-        put_type(MAJ_TYPE_FLOAT_OTHER, @float_width)
-        case @float_width
+        float_width = float_auto_width(n)
+        put_type(MAJ_TYPE_FLOAT_OTHER, float_width)
+        case float_width
         when FLOAT_SINGLE
           put_bytes([n].pack("g"))
         when FLOAT_DOUBLE
@@ -99,6 +121,15 @@ module Seaboar
       nbytes = s.bytesize
       put_numeric_bytes(type, nbytes)
       s.each_byte { |b| put(b) }
+    end
+
+    def put_simple_value(value)
+      if value <= SIMPLE_MAXINLINE
+        put_type(MAJ_TYPE_FLOAT_OTHER, value)
+      else
+        put_type(MAJ_TYPE_FLOAT_OTHER, SIMPLE_ONE_BYTE)
+        put(value)
+      end
     end
 
     def encode
@@ -114,6 +145,12 @@ module Seaboar
         end
       when Array
       when Hash
+      when true
+        put_simple_value(SIMPLE_TRUE)
+      when false
+        put_simple_value(SIMPLE_FALSE)
+      when nil
+        put_simple_value(SIMPLE_NULL)
       end
       @output
     end
