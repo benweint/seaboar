@@ -142,6 +142,7 @@ module Seaboar
       when String
         if current.encoding == 'ASCII-8BIT'
         else
+          encode_string(current, MAJ_TYPE_UTF8_STR)
         end
       when Array
       when Hash

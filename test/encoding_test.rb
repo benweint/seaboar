@@ -186,4 +186,20 @@ class EncodingTests < MiniTest::Unit::TestCase
   def test_encode_null
     assert_encode(nil, "f6")
   end
+
+  def test_encode_empty_string
+    assert_encode("", "60")
+  end
+
+  def test_encode_a
+    assert_encode("a", "6161")
+  end
+
+  def test_encode_ietf
+    assert_encode("IETF", "6449455446")
+  end
+
+  def test_encode_escaped
+    assert_encode("\"\\", "62225c")
+  end
 end
