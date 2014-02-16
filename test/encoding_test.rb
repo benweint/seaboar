@@ -197,4 +197,17 @@ class EncodingTests < MiniTest::Unit::TestCase
   def test_encode_escaped
     assert_encode("\"\\", "62225c")
   end
+
+  def test_decode_U_00FC
+    assert_decode("62c3bc", "\u00fc")
+  end
+
+  def test_decode_U_6C34
+    assert_decode("63e6b0b4", "\u6c34")
+  end
+
+  def test_decode_U_10151
+    assert_decode("64f0908591", "\u{10151}")
+  end
+
 end

@@ -229,15 +229,15 @@ class EncodingTests < MiniTest::Unit::TestCase
   def test_decode_string_escapes
     assert_decode("62225c", '"\\')
   end
-  
+
   def test_decode_diag055
     assert_decode("62c3bc", "\u00fc")
   end
-  
+
   def test_decode_diag056
     assert_decode("63e6b0b4", "\u6c34")
   end
-  
+
   def test_decode_diag057
     assert_decode("64f0908591", "\u{10151}")
   end
