@@ -1,18 +1,13 @@
 require_relative('test_helper')
 
 class EncodingTests < MiniTest::Unit::TestCase
-  def format_bytestring(s)
-    s.unpack("C*").map { |b| "%02x" % b }.join(' ')
-  end
-
   def assert_encode(object, expected, options={})
-    expected_bytes = expected.scan(/.{2}/).map(&:hex)
-    expected_bin   = expected_bytes.pack("C*")
+    expected = hex_string_to_byte_string(expected)
     actual = Seaboar.encode(object, options)
     msg = "Failed to encode #{object.inspect}\n"
-    msg << "Expected bytes: #{format_bytestring(expected_bin)}\n"
-    msg << "Actual bytes:   #{format_bytestring(actual)}\n\n"
-    assert_equal(expected_bin, actual, msg)
+    msg << "Expected bytes: #{format_byte_string(expected)}\n"
+    msg << "Actual bytes:   #{format_byte_string(actual)}\n\n"
+    assert_equal(expected, actual, msg)
   end
 
   def test_encode_zero
