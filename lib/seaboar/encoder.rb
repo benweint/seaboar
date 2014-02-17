@@ -132,8 +132,18 @@ module Seaboar
       end
     end
 
-    def encode
-      current = @input
+    def encode_array(array)
+      put_numeric_bytes(MAJ_TYPE_ARRAY, array.size)
+      array.each { |v| encode(v) }
+    end
+
+    def encode_hash(hash)
+      put_numeric_bytes(MAJ_TYPE_MAP, hash.size)
+      hash.each { |k, v| encode(k); encode(v) }
+    end
+
+    def encode(input = nil)
+      current = input || @input
       case current
       when Integer
         encode_integer(current)
@@ -145,7 +155,9 @@ module Seaboar
           encode_string(current, MAJ_TYPE_UTF8_STR)
         end
       when Array
+        encode_array(current)
       when Hash
+        encode_hash(current)
       when true
         put_simple_value(SIMPLE_TRUE)
       when false

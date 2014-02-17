@@ -198,16 +198,51 @@ class EncodingTests < MiniTest::Unit::TestCase
     assert_encode("\"\\", "62225c")
   end
 
-  def test_decode_U_00FC
-    assert_decode("62c3bc", "\u00fc")
+  def test_encode_U_00FC
+    assert_encode("\u00fc", "62c3bc")
   end
 
-  def test_decode_U_6C34
-    assert_decode("63e6b0b4", "\u6c34")
+  def test_encode_U_6C34
+    assert_encode("\u6c34", "63e6b0b4")
   end
 
-  def test_decode_U_10151
-    assert_decode("64f0908591", "\u{10151}")
+  def test_encode_U_10151
+    assert_encode("\u{10151}", "64f0908591")
   end
 
+  def test_encode_empty_array
+    assert_encode([], "80")
+  end
+
+  def test_encode_simple_array
+    assert_encode([1, 2, 3], "83010203")
+  end
+
+  def test_encode_nested_arrays
+    assert_encode([1, [2, 3], [4, 5]], "8301820203820405")
+  end
+
+  def test_encode_longer_array
+    assert_encode([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], "98190102030405060708090a0b0c0d0e0f101112131415161718181819")
+  end
+
+  def test_encode_empty_hash
+    assert_encode({}, "a0")
+  end
+
+  def test_encode_simple_hash
+    assert_encode({ 1 => 2, 3 => 4 }, "a201020304")
+  end
+
+  def test_encode_hash_with_arrays
+    assert_encode({ "a" => 1, "b" => [2, 3] }, "a26161016162820203")
+  end
+
+  def test_encode_array_with_embedded_hash
+    assert_encode([ "a", { "b" => "c" }], "826161a161626163")
+  end
+
+  def test_encode_stringy_hash
+    assert_encode({"a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E"}, "a56161614161626142616361436164614461656145")
+  end
 end
