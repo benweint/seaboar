@@ -3,7 +3,7 @@ require_relative('test_helper')
 class EncodingTests < MiniTest::Unit::TestCase
   def assert_decode(bytes, expected)
     bytes = hex_string_to_byte_string(bytes)
-    actual = Seaboar.parse(bytes)
+    actual = Seaboar.decode(bytes)
     msg = "Failed to decode #{format_byte_string(bytes)}\n"
     msg << "Expected: #{expected.inspect}\n"
     msg << "Actual:   #{actual.inspect}\n\n"

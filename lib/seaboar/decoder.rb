@@ -5,7 +5,7 @@ module Seaboar
   class ParseError < RuntimeError; end
   class InvalidSimpleTypeError < ParseError; end
 
-  class Parser
+  class Decoder
     def initialize(input)
       @value = nil
       @input = input
@@ -247,7 +247,7 @@ module Seaboar
       end
     end
 
-    def parse
+    def decode
       while (@cursor < @input.bytesize)
         parse_one
       end
