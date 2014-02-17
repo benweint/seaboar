@@ -2,7 +2,7 @@
 
 Seaboar is a pure Ruby implementation of a CBOR encoder / decoder. CBOR is Concise Binary Object Representation, a schemaless, efficient alternative to JSON. CBOR is defined by [RFC 7049](https://tools.ietf.org/html/rfc7049).
 
-Seaboar is a just-for-fun project of the author. If you're looking for a production and fast Ruby CBOR implementation, check out the [cbor-ruby](https://github.com/cabo/cbor-ruby) project.
+Seaboar is a just-for-fun project of the author. If you're looking for a Ruby CBOR implementation for use in production, you're probably in the wrong place. Check out the [cbor-ruby](https://github.com/cabo/cbor-ruby) project for a much faster and more complete implementation.
 
 Seaboar's design constraints/goals are as follows:
 
