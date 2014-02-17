@@ -7,7 +7,7 @@ Seaboar is a just-for-fun project of the author. If you're looking for a product
 Seaboar's design constraints/goals are as follows:
 
 1. Pure Ruby (no C or Java extensions)
-2. No dependencies
+2. No (runtime) dependencies
 3. Encoding support on-par with common Ruby JSON libraries
 
 Note that 'performance' is not on that list. If you're looking for good performance, you should probably use another implementation. Note also that there are some CBOR features (particularly on the encoding side) that will not be implemented in Seaboar. These include support for encoding to half-width floats, (though decoding them is supported), as well as support for encoding streaming strings, arrays, and hashes (although again, decoding these objects is supported).
