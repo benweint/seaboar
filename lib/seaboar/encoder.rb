@@ -7,7 +7,8 @@ module Seaboar
     }
 
     DEFAULTS = {
-      :float_width => :double
+      :float_width => :double,
+      :time_types  => :string
     }
 
     def initialize(input, options={})
@@ -16,6 +17,7 @@ module Seaboar
       @output.force_encoding('ASCII-8BIT')
       @options = DEFAULTS.merge(options)
       @float_width = FLOAT_WIDTHS[@options[:float_width]]
+      @time_type   = @options[:time_type]
     end
 
     def encode_integer(n)
@@ -142,6 +144,20 @@ module Seaboar
       hash.each { |k, v| encode_object(k); encode_object(v) }
     end
 
+    def encode_time(time)
+      case @time_type
+      when :string
+        put_type(MAJ_TYPE_TAG, TAG_DATETIME_STR)
+        encode_string(time.iso8601, MAJ_TYPE_UTF8_STR)
+      when :integer
+        put_type(MAJ_TYPE_TAG, TAG_EPOCH_TIME)
+        encode_integer(time.to_i)
+      when :float
+        put_type(MAJ_TYPE_TAG, TAG_EPOCH_TIME)
+        encode_float(time.to_f)
+      end
+    end
+
     def encode_object(object)
       case object
       when Integer
@@ -158,6 +174,8 @@ module Seaboar
         encode_array(object)
       when Hash
         encode_hash(object)
+      when Time
+        encode_time(object)
       when true
         put_simple_value(SIMPLE_TRUE)
       when false

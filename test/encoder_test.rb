@@ -182,6 +182,26 @@ class EncodingTests < MiniTest::Unit::TestCase
     assert_encode(nil, "f6")
   end
 
+  def test_encode_time_string
+    assert_encode(Time.iso8601("2013-03-21T20:04:00Z"), "c074323031332d30332d32315432303a30343a30305a", :time_type => :string)
+  end
+
+  def test_encode_time_integer
+    assert_encode(Time.at(1363896240), "c11a514b67b0", :time_type => :integer)
+  end
+
+  def test_encode_time_float
+    assert_encode(Time.at(1363896240.5), "c1fb41d452d9ec200000", :time_type => :float)
+  end
+
+  def test_encode_empty_byte_string
+    assert_encode(''.force_encoding('ASCII-8BIT'), "40")
+  end
+
+  def test_encode_byte_string
+    assert_encode([1,2,3,4].pack('C*'), "4401020304")
+  end
+
   def test_encode_empty_string
     assert_encode("", "60")
   end
@@ -208,14 +228,6 @@ class EncodingTests < MiniTest::Unit::TestCase
 
   def test_encode_U_10151
     assert_encode("\u{10151}", "64f0908591")
-  end
-
-  def test_encode_empty_byte_string
-    assert_encode(''.force_encoding('ASCII-8BIT'), "40")
-  end
-
-  def test_encode_byte_string
-    assert_encode([1,2,3,4].pack('C*'), "4401020304")
   end
 
   def test_encode_empty_array
