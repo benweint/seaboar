@@ -210,6 +210,14 @@ class EncodingTests < MiniTest::Unit::TestCase
     assert_encode("\u{10151}", "64f0908591")
   end
 
+  def test_encode_empty_byte_string
+    assert_encode(''.force_encoding('ASCII-8BIT'), "40")
+  end
+
+  def test_encode_byte_string
+    assert_encode([1,2,3,4].pack('C*'), "4401020304")
+  end
+
   def test_encode_empty_array
     assert_encode([], "80")
   end

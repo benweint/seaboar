@@ -149,7 +149,8 @@ module Seaboar
       when Float
         encode_float(object)
       when String
-        if object.encoding == 'ASCII-8BIT'
+        if object.encoding == Encoding::ASCII_8BIT
+          encode_string(object, MAJ_TYPE_BYTE_STR)
         else
           encode_string(object, MAJ_TYPE_UTF8_STR)
         end
