@@ -134,30 +134,29 @@ module Seaboar
 
     def encode_array(array)
       put_numeric_bytes(MAJ_TYPE_ARRAY, array.size)
-      array.each { |v| encode(v) }
+      array.each { |v| encode_object(v) }
     end
 
     def encode_hash(hash)
       put_numeric_bytes(MAJ_TYPE_MAP, hash.size)
-      hash.each { |k, v| encode(k); encode(v) }
+      hash.each { |k, v| encode_object(k); encode_object(v) }
     end
 
-    def encode(input = nil)
-      current = input || @input
-      case current
+    def encode_object(object)
+      case object
       when Integer
-        encode_integer(current)
+        encode_integer(object)
       when Float
-        encode_float(current)
+        encode_float(object)
       when String
-        if current.encoding == 'ASCII-8BIT'
+        if object.encoding == 'ASCII-8BIT'
         else
-          encode_string(current, MAJ_TYPE_UTF8_STR)
+          encode_string(object, MAJ_TYPE_UTF8_STR)
         end
       when Array
-        encode_array(current)
+        encode_array(object)
       when Hash
-        encode_hash(current)
+        encode_hash(object)
       when true
         put_simple_value(SIMPLE_TRUE)
       when false
@@ -165,6 +164,10 @@ module Seaboar
       when nil
         put_simple_value(SIMPLE_NULL)
       end
+    end
+
+    def encode
+      encode_object(@input)
       @output
     end
   end

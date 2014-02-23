@@ -245,4 +245,8 @@ class EncodingTests < MiniTest::Unit::TestCase
   def test_encode_stringy_hash
     assert_encode({"a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E"}, "a56161614161626142616361436164614461656145")
   end
+
+  def test_encode_array_with_nil
+    assert_encode([nil], "81f6")
+  end
 end
