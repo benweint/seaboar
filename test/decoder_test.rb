@@ -289,36 +289,44 @@ class DecodingTests < MiniTest::Test
   def test_decode_streaming_array_empty
     assert_decode("9fff", [])
   end
-  
-  def test_decode_diag070
+
+  # [_ 1, [2, 3], [_ 4, 5]]
+  def test_decode_streaming_array_1
     assert_decode("9f018202039f0405ffff", [1, [2, 3], [4, 5]])
   end
-  
-  def test_decode_diag071
+
+  # [_ 1, [2, 3], [4, 5]]
+  def test_decode_streaming_array_2
     assert_decode("9f01820203820405ff", [1, [2, 3], [4, 5]])
   end
-  
-  def test_decode_diag072
+
+  # [1, [2, 3], [_ 4, 5]]
+  def test_decode_streaming_array_3
     assert_decode("83018202039f0405ff", [1, [2, 3], [4, 5]])
   end
-  
-  def test_decode_diag073
+
+  # [1, [_ 2, 3], [4, 5]]
+  def test_decode_streaming_array_4
     assert_decode("83019f0203ff820405", [1, [2, 3], [4, 5]])
   end
   
-  def test_decode_diag074
+  # [_ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+  def test_decode_streaming_array_5
     assert_decode("9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25])
   end
   
-  def test_decode_diag075
+  # {_ "a": 1, "b": [_ 2, 3]}
+  def test_decode_streaming_hash_1
     assert_decode("bf61610161629f0203ffff", { "a" => 1, "b" => [2, 3] })
   end
   
-  def test_decode_diag076
+  # ["a", {_ "b": "c"}]
+  def test_decode_streaming_hash_2
     assert_decode("826161bf61626163ff", ["a", { "b" => "c" }])
   end
   
-  def test_decode_diag077
+  # {_ "Fun": true, "Amt": -2}
+  def test_decode_streaming_hash_3
     assert_decode("bf6346756ef563416d7421ff", { "Fun" => true, "Amt" => -2 })
   end
 end
