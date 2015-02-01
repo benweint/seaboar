@@ -75,9 +75,11 @@ module Seaboar
       else
         case n
         when 0.0
-          put(0x00); put(0x00)
-        when -0.0
-          put(0x80); put(0x00)
+          if n.phase == 0 # +0.0
+            put(0x00); put(0x00)
+          else # -0.0
+            put(0x80); put(0x00)
+          end
         when 1.0
           put(0x3c); put(0x00)
         when Float::INFINITY

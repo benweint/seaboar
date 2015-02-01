@@ -86,7 +86,7 @@ class EncodingTests < MiniTest::Test
     assert_encode(0.0, "f90000")
   end
 
-  def _test_encode_float_negative_zero
+  def test_encode_float_negative_zero
     assert_encode(-0.0, "f98000", :float_width => :half)
   end
 
