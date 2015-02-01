@@ -99,15 +99,7 @@ module Seaboar
     end
 
     def encode_float(n)
-      if n.nan?
-        put_float_special(n)
-        return
-      end
-      case n
-      when 0.0, 1.0, Float::INFINITY, -Float::INFINITY
-        put_float_special(n)
-      when n.nan?
-        puts "got a nan!"
+      if n.nan? || n == 0 || n == 1.0 || n == Float::INFINITY || n == -Float::INFINITY
         put_float_special(n)
       else
         float_width = float_auto_width(n)
