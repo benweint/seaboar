@@ -278,7 +278,7 @@ class DecodingTests < MiniTest::Test
     assert_decode("a56161614161626142616361436164614461656145", { "a" => "A", "b" => "B", "c" => "C", "d" => "D", "e" => "E" })
   end
   
-  def test_decode_diag067
+  def test_decode_streaming_byte_string
     assert_decode("5f42010243030405ff", [1,2,3,4,5].pack("C*"))
   end
   
