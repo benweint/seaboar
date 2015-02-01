@@ -1,6 +1,6 @@
 require_relative('test_helper')
 
-class EncodingTests < MiniTest::Unit::TestCase
+class DecodingTests < MiniTest::Test
   def assert_decode(bytes, expected)
     bytes = hex_string_to_byte_string(bytes)
     actual = Seaboar.decode(bytes)

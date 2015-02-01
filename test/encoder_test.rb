@@ -1,6 +1,6 @@
 require_relative('test_helper')
 
-class EncodingTests < MiniTest::Unit::TestCase
+class EncodingTests < MiniTest::Test
   def assert_encode(object, expected, options={})
     expected = hex_string_to_byte_string(expected)
     actual = Seaboar.encode(object, options)
